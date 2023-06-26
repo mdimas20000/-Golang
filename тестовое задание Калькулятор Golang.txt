@@ -1,0 +1,135 @@
+package main
+
+import (
+  "fmt"
+  "strings"
+  //"strconv"
+  "os"
+  "bufio"
+)
+
+func Arab_to_rim(num int) { //перевод арабского числа числа в римское
+  rimlist := [5]string{"I", "V", "X", "L", "C"}
+  var ans, degree = "", (len(rimlist)-3)/2
+  div := 10
+  if num < 100 && num > 0 {
+    for deg := degree; deg >= 0; deg -= 1 {
+      switch num / div{
+
+      case 1:
+        ans = ans + rimlist[deg*2]
+      case 2:
+        ans = ans + rimlist[deg*2] + rimlist[deg*2]
+      case 3:
+        ans = ans + rimlist[deg*2] + rimlist[deg*2] + rimlist[deg*2]
+      case 4:
+        ans = ans + rimlist[deg*2] + rimlist[deg*2+1]
+      case 5:
+        ans = ans + rimlist[deg*2+1]
+      case 6:
+        ans = ans + rimlist[deg*2+1] + rimlist[deg*2]
+      case 7:
+        ans = ans + rimlist[deg*2+1] + rimlist[deg*2] + rimlist[deg*2]
+      case 8:
+        ans = ans + rimlist[deg*2+1] + rimlist[deg*2] + rimlist[deg*2] + rimlist[deg*2]
+      case 9:
+        ans = ans + rimlist[deg*2] + rimlist[deg*2+2]
+      case 0:
+        ans = ans + ""
+      }
+      num = num % div
+      div /= 10
+    }
+    fmt.Println(ans)
+  } else {
+    fmt.Println("Некорректный ввод примера")
+  }
+}
+
+func main() {
+  reader :=bufio.NewReader(os.Stdin)
+  var inputStr, fNum, sNum = "", "", ""
+  var findOperator, X, Y = -1, -1, -1
+  var fArab, sArab = false, false
+  arabList := [10]string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"} 
+  rimList := [10]string{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
+  operandList := [4]byte{'+', '-', '*', '/'}
+  
+  fmt.Println("Введите арифметическую операцию")
+  inputStr, _ = reader.ReadString('\n')
+  inputStr = strings.TrimSpace(inputStr)
+
+  for i := 0; i < len(inputStr)-1; i++ {
+    for j := 0; j < len(operandList); j++ {
+      if inputStr[i] == operandList[j] {
+        if findOperator == -1 {
+          findOperator = i
+        } else {
+          findOperator = -2
+          break
+        }
+      }
+    }
+  }
+
+  if findOperator > 0 {
+    fNum = inputStr[0:findOperator]
+    sNum = inputStr[findOperator+1:len(inputStr)]
+    for i := 0; i < 10; i++ {
+      if fNum == arabList[i] {
+        fArab = true
+        X = i+1
+      }
+      if fNum == rimList[i] {
+        X = i+1
+      }
+      if sNum == arabList[i] {
+        sArab = true
+        Y = i+1
+      }
+      if sNum == rimList[i] {
+        Y = i+1
+      }
+    }
+    if fArab == true && sArab == true && X >= 0 && Y >= 0{
+      switch inputStr[findOperator] {
+        case '+':
+          fmt.Println(X+Y)
+        case '-':
+          fmt.Println(X-Y)
+        case '*':
+          fmt.Println(X*Y)
+        case '/':
+          fmt.Println(float32(X/Y))
+      }
+    } else if fArab == false && sArab == false && X >= 0 && Y >= 0{
+      switch inputStr[findOperator] {
+      case '+':
+        X += Y
+      case '-':
+        X -= Y
+      case '*':
+        X *= Y
+      case '/':
+        X /= Y
+      }
+      if X == 100 {
+        fmt.Println("C")
+      } else if X > 0 {
+        Arab_to_rim(X)
+      } else {
+        fmt.Println("в римской системе нет отрицательных чисел")
+      }
+    } else if X < 0 {
+      fmt.Println("некорректный ввод первого числа")
+    } else if Y < 0 {
+      fmt.Println("некорректный ввод второго числа")
+    } else {
+      fmt.Println("используются одновременно разные системы счисления.")
+    }
+  } else if findOperator < 0{
+    fmt.Println("формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *)")
+    //fmt.Println(findOperator)
+  }
+}
+//toNum, _ := strconv.Atoi(inputStr)
