@@ -1,14 +1,16 @@
 package main
 
 import (
-  "fmt"
-  "strings"
-  //"strconv"
-  "os"
-  "bufio"
+	"fmt"
+	"strings"
+  "errors"
+
+	//"strconv"
+	"bufio"
+	"os"
 )
 
-func Arab_to_rim(num int) { //перевод арабского числа числа в римское
+func Arab_to_rim(num int) (string, error){ //перевод арабского числа числа в римское
   rimlist := [5]string{"I", "V", "X", "L", "C"}
   var ans, degree = "", (len(rimlist)-3)/2
   div := 10
@@ -40,13 +42,14 @@ func Arab_to_rim(num int) { //перевод арабского числа чи�
       num = num % div
       div /= 10
     }
-    fmt.Println(ans)
+    return ans, nil
   } else {
-    fmt.Println("Некорректный ввод примера")
+    return ans, errors.New("Arab to rim convertor - BadInputNumber") //не выполнится, т.к. происходит проверка до
   }
 }
 
-func main() {
+func arifmNum() (string, error) {
+  
   reader :=bufio.NewReader(os.Stdin)
   var inputStr, fNum, sNum = "", "", ""
   var findOperator, X, Y = -1, -1, -1
@@ -118,18 +121,39 @@ func main() {
       } else if X > 0 {
         Arab_to_rim(X)
       } else {
-        fmt.Println("в римской системе нет отрицательных чисел")
+        panic("NegativeRimNum")
       }
     } else if X < 0 {
-      fmt.Println("некорректный ввод первого числа")
+      panic("BadFirstNum")
     } else if Y < 0 {
-      fmt.Println("некорректный ввод второго числа")
+      panic("BadSecondNum")
     } else {
-      fmt.Println("используются одновременно разные системы счисления.")
+      panic("DiffCalcSystem")
     }
   } else if findOperator < 0{
-    fmt.Println("формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *)")
+    panic("WrongOperator")
     //fmt.Println(findOperator)
   }
+  return "0", nil
+}
+
+func main() {
+  arifmNum()
 }
 //toNum, _ := strconv.Atoi(inputStr)
+
+/*
+ try{
+    arifmNum()
+  }catch("NegativeRimNum"){
+    fmt.Println("в римской системе нет отрицательных чисел")
+  }catch("BadFirstNum"){
+    fmt.Println("некорректный ввод первого числа")
+  }catch("BadSecondNum"){
+    fmt.Println("некорректный ввод второго числа")
+  }catch("DiffCalcSystem"){
+    fmt.Println("используются одновременно разные системы счисления.")
+  }catch("WrongOperator"){
+    fmt.Println("формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *)")
+  }finally{}
+*/
