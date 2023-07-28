@@ -3,19 +3,18 @@ package main
 import (
 	"fmt"
 	"strings"
-  "errors"
 
 	//"strconv"
 	"bufio"
 	"os"
 )
 
-func Arab_to_rim(num int) (string, error){ //перевод арабского числа числа в римское
+func Arab_to_rim(num int){ //перевод арабского числа числа в римское
   rimlist := [5]string{"I", "V", "X", "L", "C"}
   var ans, degree = "", (len(rimlist)-3)/2
   div := 10
   if num < 100 && num > 0 {
-    for deg := degree; deg >= 0; deg -= 1 {
+    for deg := degree; deg >= 0; deg -= 1{
       switch num / div{
 
       case 1:
@@ -42,9 +41,9 @@ func Arab_to_rim(num int) (string, error){ //перевод арабского �
       num = num % div
       div /= 10
     }
-    return ans, nil
+    println(ans)
   } else {
-    return ans, errors.New("Arab to rim convertor - BadInputNumber") //не выполнится, т.к. происходит проверка до
+    panic("Arab to rim convertor - BadInputNumber") //не выполнится, т.к. происходит проверка до
   }
 }
 
